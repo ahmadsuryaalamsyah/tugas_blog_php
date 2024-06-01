@@ -83,29 +83,29 @@ if(isset($_GET['data'])){
                 </div>
 
                 <div class="p-4">
-                        <h4 class="font-italic">Tag</h4>
-                        <ol class="list-unstyled">
-                        <?php 
-                        // Correct the column name in the SQL query
-                        $sql_t = "SELECT `id_tag`, `tag` FROM `tag` ORDER BY `tag`";
-                        $query_t = mysqli_query($koneksi, $sql_t);
-                        
-                        // Check if the query was successful
-                        if ($query_t) {
-                            // Check if there are any rows returned
-                            if (mysqli_num_rows($query_t) > 0) {
-                                while ($data_t = mysqli_fetch_row($query_t)) {
-                                    $id_tag = $data_t[0];
-                                    $tag_name = $data_t[1];
-                        ?>
-                                    <li><a href="tag_blog.php?tag=<?php echo $id_tag; ?>"><?php echo $tag_name; ?></a></li>
-                        <?php 
-                                }
-                            } 
-                        }
-                        ?>
-                        </ol>
-                    </div>
+                 <h4 class="font-italic">Tag</h4>
+                 <ol class="list-unstyled">
+                  <?php 
+                    // Correct the column name in the SQL query
+                    $sql_t = "SELECT `id_tag`, `tag` FROM `tag` ORDER BY `tag`";
+                    $query_t = mysqli_query($koneksi, $sql_t);
+                    
+                    // Check if the query was successful
+                    if ($query_t) {
+                        // Check if there are any rows returned
+                        if (mysqli_num_rows($query_t) > 0) {
+                            while ($data_t = mysqli_fetch_row($query_t)) {
+                                $id_tag = $data_t[0];
+                                $tag_name = $data_t[1];
+                      ?>
+                     <li><a href="tag_blog.php?tag=<?php echo $id_tag; ?>"><?php echo $tag_name; ?></a></li>
+                  <?php 
+                         }
+                     } 
+                 }
+                 ?>
+                 </ol>
+                </div>
             </aside><!-- /.blog-sidebar -->
 
         </div><!-- /.row -->
