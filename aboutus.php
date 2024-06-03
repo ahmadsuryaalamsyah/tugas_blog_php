@@ -1,3 +1,5 @@
+<?php include_once("koneksi/koneksi.php"); ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,6 +18,9 @@
       <main role="main" class="container">
         <div class="row">
           <div class="col-md-9 blog-main">
+            <?php 
+            $sql_a = "SELECT ``"
+            ?>
             <div class="blog-post">
               <h2 class="blog-post-title">About Us</h2>
               <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
@@ -26,7 +31,9 @@
                 of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop 
                 publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
             </div><br><br><!-- /.blog-post -->
+            
           </div><!-- /.blog-main -->
+          
       
           <aside class="col-md-3 blog-sidebar">
       

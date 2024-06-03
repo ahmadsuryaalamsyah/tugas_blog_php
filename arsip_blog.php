@@ -1,54 +1,66 @@
-<?php include_once("koneksi/koneksi.php"); ?>
-<?php 
-if(isset($_GET['data'])){
-  $id_kategori = $_GET['data'];
-  $sql = "SELECT `b`.`id_blog`, `b`.`judul`, DATE_FORMAT(`b`.`tanggal`, '%d-%m-%Y') AS `tanggal`, 
-              `b`.`isi`, `u`.`nama` FROM `blog` `b`
-              INNER JOIN `user` `u` ON `b`.`id_user` = `u`.`id_user`
-              WHERE `b`.`id_kategori_blog` = $id_kategori
-              ORDER BY `b`.`tanggal` DESC";
-  $query = mysqli_query($koneksi, $sql);
-  $blog_posts = [];
-  while($data = mysqli_fetch_assoc($query)){
-    $blog_posts[] = $data;
-  }
+<?php
+include_once("koneksi/koneksi.php");
+
+// Mendapatkan parameter bulan dari URL
+if (isset($_GET['bulan'])) {
+    $bulan = urldecode($_GET['bulan']);
+
+    // Konversi bulan ke format tanggal untuk filter SQL
+    $date = DateTime::createFromFormat('F Y', $bulan);
+    $formatted_month = $date->format('Y-m');
+
+    $sql = "SELECT `id_blog`, `judul`, DATE_FORMAT(`tanggal`, '%d-%m-%Y') AS `tanggal`, `isi`
+            FROM `blog`
+            WHERE DATE_FORMAT(`tanggal`, '%Y-%m') = '$formatted_month'
+            ORDER BY `tanggal` DESC";
+    $query = mysqli_query($koneksi, $sql);
+} else {
+    echo "Bulan tidak ditemukan.";
+    exit;
 }
 ?>
 
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <?php include("include/head.php"); ?>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <?php include_once("include/nav.php");?>
-</nav>
-<section id="blog-header">
-    <div class="container">
-        <h1 class="text-white">Blog Category</h1>
-    </div>
-</section><br><br>
-<section id="blog-list">
-    <main role="main" class="container">
+  </head>
+  <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <?php include_once("include/nav.php");?>
+  </nav>
+    <section id="blog-header">
+      <div class="container">
+        <h1 class="text-white">Blog Archives: <?php echo $bulan; ?></h1>
+      </div>
+    </section><br><br>
+    <section id="blog-list">
+      <main role="main" class="container">
         <div class="row">
-            <div class="col-md-9 blog-main">
-                <?php if (!empty($blog_posts)): ?>
-                    <?php foreach ($blog_posts as $post): ?>
-                        <div class="blog-post">
-                            <h2 class="blog-post-title"><?php echo $post['judul']; ?></h2>
-                            <p class="blog-post-meta"><?php echo $post['tanggal']; ?> by 
-                                <a href="#"><?php echo $post['nama']; ?></a></p>
-                            <p><?php echo substr($post['isi'], 0, 200) . '...'; ?></p>
-                            <a href="blog_detail.php?data=<?php echo $post['id_blog']; ?>">Read more</a>
-                        </div><br><br>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No posts found in this category.</p>
-                <?php endif; ?>
-            </div><!-- /.blog-main -->
-
-            <aside class="col-md-3 blog-sidebar">
+          <div class="col-md-9 blog-main">
+          <?php 
+          while($data = mysqli_fetch_row($query)){
+              $id_blog = $data[0];
+              $judul_blog = $data[1];
+              $tanggal = $data[2];
+              $isi = $data[3];
+          ?>
+            <div class="blog-post">
+              <h2 class="blog-post-title"><a href="detailblog.php?data=<?php echo $id_blog;?>" ><?php echo $judul_blog ?></a></h2>
+              <p class="blog-post-meta"><?php echo $tanggal ?> <a href="#">Ahmad Surya Alam Syah</a></p>
+              <p><?php echo $isi?></p>
+              <a href="detailblog.php?data=<?php echo $id_blog;?>" class="btn btn-primary stretched-link">Continue reading..</a>
+            </div><!-- /.blog-post --><br><br>
+          <?php }?>
+      
+            <nav class="blog-pagination">
+              <a class="btn btn-outline-primary" href="#">Older</a>
+              <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
+            </nav>
+      
+          </div><!-- /.blog-main -->
+      
+          <aside class="col-md-3 blog-sidebar">
                 <div class="p-4">
                     <h4 class="font-italic">Categories</h4>
                     <ol class="list-unstyled mb-0">
@@ -84,7 +96,7 @@ if(isset($_GET['data'])){
                     </ol>
                 </div>
 
-                <div class="p-4">
+            <div class="p-4">
               <h4 class="font-italic">Tag</h4>
               <ol class="list-unstyled">
               <?php 
@@ -104,14 +116,13 @@ if(isset($_GET['data'])){
             </div>
       
           </aside><!-- /.blog-sidebar -->
-
+      
         </div><!-- /.row -->
-
-    </main><!-- /.container -->
-</section><br><br>
-<footer>
-    <?php include("include/footer.php"); ?>
-</footer>
-
-</body>
+      
+      </main><!-- /.container -->
+    </section><br><br>
+    <footer>
+      <?php include("include/footer.php"); ?>
+    </footer>
+  </body>
 </html>
